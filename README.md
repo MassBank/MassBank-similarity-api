@@ -49,7 +49,8 @@ docker run -p 8080:8080 \
 -e MSP='/MassBank_NIST.msp' \
 massbank3-similarity-service
 ```
-Prebuild docker images are available from [quay.io/massbank/massbank3-similarity-service](https://quay.io/repository/massbank/massbank3-similarity-service).  
+Prebuild docker images are available from
+[quay.io/massbank/massbank3-similarity-service](https://quay.io/repository/massbank/massbank3-similarity-service).  
 The fastest way to get things running is:
 ```bash
 # download reference data
