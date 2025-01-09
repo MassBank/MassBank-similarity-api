@@ -11,8 +11,9 @@ from matchms.importing import load_from_msp
 from matchms.similarity import CosineGreedy
 
 from similarity_service.models import SimilarityScore
-from similarity_service.models.similarity_calculation import SimilarityCalculation  # noqa: E501
-from similarity_service.models.similarity_score_list import SimilarityScoreList  # noqa: E501
+from similarity_service.models.similarity_calculation import SimilarityCalculation
+from similarity_service.models.similarity_score_list import SimilarityScoreList
+from similarity_service_impl.version import __version__
 
 # Environment variables
 MSP = os.environ.get('MSP', "./MassBank_NIST.msp")
@@ -33,8 +34,10 @@ print(__name__)
 if VERBOSE == "true":
     logger.setLevel(logging.DEBUG)
 
+
 def load_spectra():
-    """load all spectra from the given msp file"""
+    """Load all spectra from the given msp file
+    """
     global timestamp, MSP, spectra
     with lock:
         file_timestamp = datetime.fromtimestamp(os.path.getmtime(MSP))
@@ -48,16 +51,13 @@ def load_spectra():
             logger.info("Finished. Loaded %s spectra from the data file.", len(spectra))
 
 
-
-def similarity_post(similarity_calculation):  # noqa: E501
+def similarity_post(similarity_calculation):
     """Create a new similarity calculation.
 
-     # noqa: E501
-
     :param similarity_calculation: a similarity job
-    :type similarity_calculation: dict | bytes
+    :type similarity_calculation: SimilarityCalculation
 
-    :rtype: Union[SimilarityScoreList, Tuple[SimilarityScoreList, int], Tuple[SimilarityScoreList, int, Dict[str, str]]
+    :rtype: SimilarityScoreList
     """
     if connexion.request.is_json:
         request = SimilarityCalculation.from_dict(similarity_calculation)
@@ -92,15 +92,9 @@ def similarity_post(similarity_calculation):  # noqa: E501
         return match_list
 
 
-def version_get():  # noqa: E501
+def version_get():
     """Get the version string of the implementation.
 
-     # noqa: E501
-
-
-    :rtype: Union[str, Tuple[str, int], Tuple[str, int, Dict[str, str]]
+    :rtype: str
     """
-    return 'similarity service 0.1'
-
-
-
+    return f'similarity service {__version__}'

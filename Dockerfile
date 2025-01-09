@@ -15,8 +15,6 @@ COPY --from=0 /usr/src/app/openapi.yaml /usr/src/app/openapi.yaml
 COPY --from=0 /usr/src/app/gen /usr/src/app/gen
 COPY similarity_service_impl /usr/src/app/similarity_service_impl
 
-ENV PYTHONPATH=/usr/src/app/gen
-
 EXPOSE 8080/tcp
 ENTRYPOINT ["/usr/local/bin/waitress-serve"]
 CMD ["--port=8080", "similarity_service_impl.app:app"]

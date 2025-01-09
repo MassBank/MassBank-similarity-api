@@ -2,12 +2,10 @@ name: Run Unit Tests
 on:
   push:
     branches:
-      - main
-      - dev
+      - '**'
   pull_request:
     branches:
-      - main
-      - dev
+      - '**'
 
 jobs:
   test:
@@ -34,4 +32,4 @@ jobs:
 
       - name: Run tests
         run: |
-          PYTHONPATH=gen python -m unittest discover -s test
+          python -m unittest discover -s test

@@ -6,7 +6,7 @@ from flask_testing import TestCase
 from similarity_service.encoder import JSONEncoder
 
 
-class BaseTestCase(TestCase):
+class MyBaseTestCase(TestCase):
 
     def create_app(self):
         logging.getLogger('connexion.operation').setLevel('ERROR')

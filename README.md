@@ -28,7 +28,7 @@ and start the server like this:
 ```bash
 pip3 install -r requirements.txt
 bash generate.sh
-PYTHONPATH=gen python3 -m similarity_service_impl
+python3 -m similarity_service_impl
 ```
 You can find the swagger ui at http://localhost:8080/ui/ and the
 OpenAPI definition at http://localhost:8080/openapi.json in your browser.

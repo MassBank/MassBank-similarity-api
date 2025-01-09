@@ -1,4 +1,7 @@
 import os
+import sys
+# Add the 'gen' directory to the PYTHONPATH
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../gen'))
 
 import connexion
 import logging
