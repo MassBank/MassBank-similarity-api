@@ -27,4 +27,4 @@ def serve_app():
         logging.getLogger('waitress').setLevel(logging.DEBUG)
         serve(TransLogger(app, setup_console_handler=False), listen='*:8080')
     else:
-        serve(app, threads=8, listen='*:8080')
+        serve(app, listen='*:8080')
