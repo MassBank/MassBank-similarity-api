@@ -8,5 +8,4 @@ def index():
     return redirect('/ui/')
 
 if __name__ == '__main__':
-
     similarity_service_impl.app.serve_app()
