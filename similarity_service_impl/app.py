@@ -25,6 +25,6 @@ def serve_app():
     if VERBOSE == "true":
         from paste.translogger import TransLogger
         logging.getLogger('waitress').setLevel(logging.DEBUG)
-        serve(TransLogger(app, setup_console_handler=False), listen='*:8080')
+        serve(TransLogger(app, setup_console_handler=False), threads=1, listen='*:8080')
     else:
-        serve(app, listen='*:8080')
+        serve(app, threads=1, listen='*:8080')

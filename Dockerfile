@@ -17,4 +17,4 @@ COPY similarity_service_impl /usr/src/app/similarity_service_impl
 
 EXPOSE 8080/tcp
 ENTRYPOINT ["/usr/local/bin/waitress-serve"]
-CMD ["--port=8080", "--threads=8", "similarity_service_impl.app:app"]
+CMD ["--port=8080", "--threads=1", "similarity_service_impl.app:app"]
