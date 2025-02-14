@@ -1,1 +1,1 @@
-__version__ = "v1.1-SNAPSHOT-matchms-0.28.2"
+__version__ = "v1.1-matchms-0.28.2"

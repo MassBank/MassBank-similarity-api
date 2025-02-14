@@ -13,43 +13,18 @@ from matchms.similarity import CosineGreedy
 from similarity_service.models import SimilarityScore
 from similarity_service.models.similarity_calculation import SimilarityCalculation
 from similarity_service.models.similarity_score_list import SimilarityScoreList
+from similarity_service_impl.spectra_loader import spectra_loader
 from similarity_service_impl.version import __version__
 
 # Environment variables
-MSP = os.environ.get('MSP', "./MassBank_NIST.msp")
 VERBOSE = os.environ.get('VERBOSE', "false")
-
-# Global variables for in-memory data
-timestamp = datetime.fromisoformat('2010-01-01')
-spectra = []
-
-# Lock for thread safety
-lock = threading.Lock()
 
 # set log level
 set_matchms_logger_level("ERROR")
 
 logger = logging.getLogger('similarity_service_impl_controller')
-print(__name__)
 if VERBOSE == "true":
     logger.setLevel(logging.DEBUG)
-
-
-def load_spectra():
-    """Load all spectra from the given msp file
-    """
-    global timestamp, MSP, spectra
-    with lock:
-        file_timestamp = datetime.fromtimestamp(os.path.getmtime(MSP))
-        logger.debug("In-memory timestamp of reference spectra: %s", timestamp)
-        logger.debug("Reference spectra data file timestamp: %s", file_timestamp)
-        timestamp_diff = file_timestamp - timestamp
-        if timestamp_diff.total_seconds() > 0:
-            logger.info("Reference spectra data file timestamp is %s newer. Reloading...", timestamp_diff)
-            spectra = list(load_from_msp(MSP))
-            timestamp = file_timestamp
-            logger.info("Finished. Loaded %s spectra from the data file.", len(spectra))
-
 
 def similarity_post(similarity_calculation):
     """Create a new similarity calculation.
@@ -62,7 +37,7 @@ def similarity_post(similarity_calculation):
     if connexion.request.is_json:
         request = SimilarityCalculation.from_dict(similarity_calculation)
 
-        load_spectra()
+        spectra_loader.load_spectra()
 
         mz, intensities = zip(*[(peak.mz, peak.intensity) for peak in request.peak_list])
         logger.debug("Got spectra: %s", request.peak_list)
@@ -78,7 +53,7 @@ def similarity_post(similarity_calculation):
 
         if request.reference_spectra_list is not None:
             logger.debug("Got %s reference spectra.", len(request.reference_spectra_list))
-        references = spectra
+        references = spectra_loader.spectra
         if request.reference_spectra_list:
             references = [s for s in references if s.metadata['spectrum_id'] in request.reference_spectra_list]
         logger.debug("Use %s for calculation.", len(references))
