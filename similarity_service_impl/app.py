@@ -34,6 +34,6 @@ def serve_app():# Create and start a thread to run spectra_loader.load_spectra()
     if VERBOSE == "true":
         from paste.translogger import TransLogger
         logging.getLogger('waitress').setLevel(logging.DEBUG)
-        serve(TransLogger(app, setup_console_handler=False), threads=2, listen='*:8080')
+        serve(TransLogger(app, setup_console_handler=False), threads=1, listen='*:8080')
     else:
-        serve(app, threads=2, listen='*:8080')
+        serve(app, threads=1, listen='*:8080')
