@@ -13,8 +13,8 @@ RUN pip3 install --root-user-action=ignore --upgrade pip && pip3 install --root-
 
 COPY --from=0 /usr/src/app/openapi.yaml /usr/src/app/openapi.yaml
 COPY --from=0 /usr/src/app/gen /usr/src/app/gen
-COPY similarity_service_impl /usr/src/app/similarity_service_impl
+COPY similarity_api_impl /usr/src/app/similarity_api_impl
 
 EXPOSE 8080/tcp
 ENTRYPOINT ["/usr/local/bin/waitress-serve"]
-CMD ["--port=8080", "--threads=1", "similarity_service_impl.app:app"]
+CMD ["--port=8080", "--threads=1", "similarity_api_impl.app:app"]

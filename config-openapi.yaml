@@ -5,5 +5,5 @@ apiDocs: true
 modelDocs: true
 apiTests: true
 modelTests: true
-packageName: similarity_service
+packageName: similarity_api
 packageVersion: 0.1.0

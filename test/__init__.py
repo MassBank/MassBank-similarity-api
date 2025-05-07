@@ -3,7 +3,7 @@ import logging
 import connexion
 from flask_testing import TestCase
 
-from similarity_service.encoder import JSONEncoder
+from similarity_api.encoder import JSONEncoder
 
 
 class MyBaseTestCase(TestCase):

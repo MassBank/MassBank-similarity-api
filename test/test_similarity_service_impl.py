@@ -5,14 +5,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../gen'))
 
 import unittest
 from flask import json
-from similarity_service.models import Peak, SimilarityCalculation
+from similarity_api.models import Peak, SimilarityCalculation
 from test import MyBaseTestCase
 
 
 #set MSP to the test data
 os.environ["MSP"] = os.path.join(os.path.dirname(__file__), 'test_data.msp')
 
-class TestSimilarityServiceImplController(MyBaseTestCase):
+class TestSimilarityApiImplController(MyBaseTestCase):
 
     def setUp(self):
         self.headers = {
@@ -123,7 +123,7 @@ class TestSimilarityServiceImplController(MyBaseTestCase):
             method='GET',
             headers=self.headers)
         self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
-        self.assertTrue(response.json.startswith('similarity service'))
+        self.assertTrue(response.json.startswith('similarity api'))
 
 
 if __name__ == '__main__':

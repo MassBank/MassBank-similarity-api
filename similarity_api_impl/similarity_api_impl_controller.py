@@ -10,11 +10,11 @@ from matchms.filtering import normalize_intensities
 from matchms.importing import load_from_msp
 from matchms.similarity import CosineGreedy
 
-from similarity_service.models import SimilarityScore
-from similarity_service.models.similarity_calculation import SimilarityCalculation
-from similarity_service.models.similarity_score_list import SimilarityScoreList
-from similarity_service_impl.spectra_loader import spectra_loader
-from similarity_service_impl.version import __version__
+from similarity_api.models import SimilarityScore
+from similarity_api.models.similarity_calculation import SimilarityCalculation
+from similarity_api.models.similarity_score_list import SimilarityScoreList
+from similarity_api_impl.spectra_loader import spectra_loader
+from similarity_api_impl.version import __version__
 
 # Environment variables
 VERBOSE = os.environ.get('VERBOSE', "false")
@@ -22,7 +22,7 @@ VERBOSE = os.environ.get('VERBOSE', "false")
 # set log level
 set_matchms_logger_level("ERROR")
 
-logger = logging.getLogger('similarity_service_impl_controller')
+logger = logging.getLogger('similarity_api_impl_controller')
 if VERBOSE == "true":
     logger.setLevel(logging.DEBUG)
 
@@ -72,4 +72,4 @@ def version_get():
 
     :rtype: str
     """
-    return f'similarity service {__version__}'
+    return f'similarity api {__version__}'

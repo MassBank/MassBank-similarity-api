@@ -13,7 +13,7 @@ paths:
   /version:
     get:
       summary: Get the version string of the implementation.
-      x-openapi-router-controller: similarity_service_impl.similarity_service_impl_controller
+      x-openapi-router-controller: similarity_api_impl.similarity_api_impl_controller
       operationId: version_get
       responses:
         "200":
@@ -22,11 +22,11 @@ paths:
             application/json:
               schema:
                 type: string
-              example: similarity service 0.1
+              example: similarity api 0.1
   /similarity:
     post:
       summary: Create a new similarity calculation.
-      x-openapi-router-controller: similarity_service_impl.similarity_service_impl_controller
+      x-openapi-router-controller: similarity_api_impl.similarity_api_impl_controller
       operationId: similarity_post
       requestBody:
         description: a similarity job
