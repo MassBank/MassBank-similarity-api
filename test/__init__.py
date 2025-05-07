@@ -13,6 +13,6 @@ class MyBaseTestCase(TestCase):
         app = connexion.App(__name__, specification_dir='..')
         app.app.json_encoder = JSONEncoder
         app.add_api('openapi.yaml',
-                    arguments={'title': 'Similarity score api for MassBank3'},
+                    arguments={'title': 'Similarity score api for MassBank'},
                     pythonic_params=True)
         return app.app

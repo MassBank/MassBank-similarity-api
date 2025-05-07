@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Similarity score api for MassBank3
+  title: Similarity score api for MassBank
   description:
-    This similarity score api for MassBank3 calculates the spectral similarity
+    This similarity score api for MassBank calculates the spectral similarity
     between the spectrum defined in the query peak list and the reference spectra
     list.
   version: "0.1"

@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: quay.io/massbank/massbank3-similarity-service
+          images: quay.io/massbank/massbank-similarity-api
           tags: |
             # tag event
             type=ref,event=tag

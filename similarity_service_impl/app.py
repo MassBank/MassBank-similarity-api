@@ -20,7 +20,7 @@ logging.basicConfig(
 app = connexion.App(__name__, specification_dir='..')
 app.app.json_encoder = encoder.JSONEncoder
 app.add_api('openapi.yaml',
-            arguments={'title': 'Similarity score api for MassBank3'},
+            arguments={'title': 'Similarity score api for MassBank'},
             pythonic_params=True)
 
 @app.app.route('/')
