@@ -21,6 +21,8 @@ to "true".
 ```bash
 export VERBOSE=true
 ```
+The application context path can be configured with the environment variable CONTEXT_PATH.
+If not set / is used by default.
 
 ## Usage
 To run the server, install the requirements, generate the server code 
