@@ -4,7 +4,7 @@ setuptools
 Flask < 2.3
 waitress == 3.0.2
 
-matchms == 0.29.0
+matchms == 0.30.0
 numpy
 
 Paste ==3.10.1
