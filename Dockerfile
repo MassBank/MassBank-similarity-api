@@ -6,7 +6,7 @@ COPY generate.sh config-openapi.yaml openapi.yaml /usr/src/app/
 WORKDIR /usr/src/app
 RUN bash generate.sh
 
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 WORKDIR /usr/src/app
 COPY requirements.txt /usr/src/app/
 RUN pip3 install --root-user-action=ignore --upgrade pip && pip3 install --root-user-action=ignore --no-cache-dir -r requirements.txt
