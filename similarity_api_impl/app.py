@@ -9,7 +9,7 @@ import logging
 import threading
 from similarity_api import encoder
 from waitress import serve
-from flask import redirect
+from flask import redirect,request
 from similarity_api_impl.spectra_loader import spectra_loader
 
 VERBOSE = os.environ.get('VERBOSE', "false")
@@ -30,11 +30,11 @@ app.add_api('openapi.yaml',
 init_thread = threading.Thread(target=spectra_loader.load_spectra)
 init_thread.start()
 # Enable verbose logging if set
-if VERBOSE == "true":
-    print(CONTEXT_PATH)
-    from paste.translogger import TransLogger
-    logging.getLogger('waitress').setLevel(logging.DEBUG)
-    app.app.wsgi_app = TransLogger(app.app.wsgi_app, setup_console_handler=False)
+@app.app.before_request
+def log_request_info():
+    if VERBOSE == "true":
+        logging.getLogger('waitress').setLevel(logging.DEBUG)
+        app.app.logger.info(f"{request.method} {request.path} from {request.remote_addr}")
 
 
 @app.app.route(f'{CONTEXT_PATH}/')
