@@ -19,10 +19,10 @@ service with the latest MassBank-data release in file format.
 ```bash
 # get the latest release artifact of MassBank-data (reference data) and put it into MassBank-data folder
 version=$(curl -s https://api.github.com/repos/MassBank/MassBank-data/releases/latest \
-| grep "tag_name" | sed "s/\"tag_name\": //g" | sed "s/\"//g" | sed "s/,//g" | sed "s/ //g") && \
-wget -O MassBank-data-$version.tar.gz https://github.com/MassBank/MassBank-data/archive/refs/tags/$version.tar.gz && \
-tar -xzf MassBank-data-$version.tar.gz && \
-mv MassBank-data-$version MassBank-data
+| grep "tag_name" | sed "s/\"tag_name\": //g" | sed "s/\"//g" | sed "s/,//g" | sed "s/ //g")
+mkdir -p MassBank-data
+wget -qO- https://github.com/MassBank/MassBank-data/archive/refs/tags/$version.tar.gz | \
+tar -xzf - -C ./MassBank-data --strip-components=1
 ```
 
 Now we set the environment variable:

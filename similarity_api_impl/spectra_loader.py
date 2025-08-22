@@ -2,7 +2,7 @@ import logging
 import os
 import threading
 from datetime import datetime
-from similarity_api_impl.utils import load_from_massbank_files
+from similarity_api_impl.massbank_utils import load_from_massbank_files
 
 logger = logging.getLogger('spectra_loader')
 
@@ -24,6 +24,7 @@ class SpectraLoader:
                 self.spectra = load_from_massbank_files(self.data_dir)                
                 self.timestamp = file_timestamp
                 logger.info("Loaded %s spectra from %s.", len(self.spectra), self.data_dir)
+
 
 # Environment variables
 DATA_DIR = os.environ.get('DATA_DIR', "./MassBank-data")

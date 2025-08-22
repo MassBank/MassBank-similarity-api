@@ -1,12 +1,10 @@
 import logging
 import os
-from datetime import datetime
 
 import connexion
 import numpy
 from matchms import calculate_scores, set_matchms_logger_level, Spectrum
 from matchms.filtering import normalize_intensities
-from matchms.importing import load_from_msp
 from matchms.similarity import CosineGreedy
 
 from similarity_api.models import SimilarityScore
@@ -64,6 +62,7 @@ def similarity_post(similarity_calculation):
 
         logger.debug("Calculated scores for %s similar spectra.", len(match_list.similarity_score_list))
         return match_list
+    return None
 
 
 def version_get():
