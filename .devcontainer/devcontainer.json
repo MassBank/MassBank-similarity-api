@@ -3,9 +3,10 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "workspaceFolder": "${localWorkspaceFolder}",
-  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind,Z",
+  "workspaceFolder": "/workspaces/MassBank-similarity-api",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/MassBank-similarity-api,type=bind,Z",
   "mounts": [
+    "source=${localWorkspaceFolder}/../MassBank-data,target=/workspaces/MassBank-data,type=bind,Z",
     "source=codex-devcontainer,target=/home/vscode/.codex,type=volume",
     "source=copilot-devcontainer,target=/home/vscode/.copilot,type=volume"
   ],
