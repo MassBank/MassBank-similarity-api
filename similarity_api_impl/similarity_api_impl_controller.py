@@ -3,11 +3,9 @@ import os
 
 import connexion
 import numpy
-from matchms import calculate_scores, set_matchms_logger_level, Spectrum
+from matchms import set_matchms_logger_level, Spectrum
 from matchms.filtering import normalize_intensities
-from matchms.similarity import CosineGreedy
 
-from similarity_api.models import SimilarityScore
 from similarity_api.models.similarity_calculation import SimilarityCalculation
 from similarity_api.models.similarity_score_list import SimilarityScoreList
 from similarity_api_impl.spectra_loader import spectra_loader
@@ -48,20 +46,11 @@ def similarity_post(similarity_calculation):
                 status=400,
             )
 
-        if request.reference_spectra_list is not None:
-            logger.debug("Got %s reference spectra.", len(request.reference_spectra_list))
-        references = spectra_loader.spectra
-        if request.reference_spectra_list:
-            references = [s for s in references if s.metadata['spectrum_id'] in request.reference_spectra_list]
-        logger.debug("Use %s for calculation.", len(references))
-
-        scores = calculate_scores(references, [query], CosineGreedy())
-        matches = scores.scores_by_query(query, 'CosineGreedy_score', sort=True)
-        match_list = SimilarityScoreList(
-            [SimilarityScore(match[0].metadata['spectrum_id'], match[1][0]) for match in matches])
-
-        logger.debug("Calculated scores for %s similar spectra.", len(match_list.similarity_score_list))
-        return match_list
+        # Keep one immutable snapshot for the duration of this request.
+        packed = spectra_loader.packed
+        return SimilarityScoreList.from_dict({
+            "similarity_score_list": packed.score(query.peaks.to_numpy, request.reference_spectra_list)
+        })
     return None
 
 

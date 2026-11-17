@@ -45,4 +45,4 @@ def index():
 
 
 def serve_app():
-    serve(app, threads=1, listen='*:8080')
+    serve(app, threads=int(os.environ.get('THREADS', '2')), listen='*:8080')

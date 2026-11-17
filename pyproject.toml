@@ -10,6 +10,7 @@ dependencies = [
     "waitress==3.0.2",
     "matchms==0.34.0",
     "numpy",
+    "numba",
 ]
 
 [dependency-groups]

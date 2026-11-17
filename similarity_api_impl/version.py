@@ -1,1 +1,3 @@
-__version__ = "1.9.0-SNAPSHOT-matchms-0.31.0"
+from importlib.metadata import version
+
+__version__ = f"1.9.0-SNAPSHOT-matchms-{version("matchms")}"
