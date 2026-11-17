@@ -1,0 +1,28 @@
+{
+  "name": "MassBank-similarity-api Development",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind,Z",
+  "mounts": [
+    "source=codex-devcontainer,target=/home/vscode/.codex,type=volume",
+    "source=copilot-devcontainer,target=/home/vscode/.copilot,type=volume"
+  ],
+  "runArgs": [
+    "--userns=keep-id:uid=1000,gid=1000"
+  ],
+  "remoteEnv": {
+    "VIRTUAL_ENV": "${containerWorkspaceFolder}/.venv",
+    "PATH": "${containerWorkspaceFolder}/.venv/bin:${containerEnv:PATH}"
+  },
+  "updateRemoteUserUID": false,
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "MassBank Similarity API",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "uv venv --python 3.13 && uv pip install -r test-requirements.txt && mkdir -p gen && bash generate.sh"
+}
