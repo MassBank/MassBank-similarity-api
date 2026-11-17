@@ -9,9 +9,9 @@ Generator](https://openapi-generator.tech) project and uses the
 
 The service prepares reference peaks once as read-only arrays shared by request
 threads. The comparison loop is compiled by Numba and releases the GIL, allowing
-threads to calculate similarities in parallel while sharing one reference dataset.
-The API contract, generated models and controller routing use the `python-flask`
-generator.
+threads to calculate similarities in parallel while sharing one reference
+dataset. The API contract, generated models and controller routing use the
+`python-flask` generator.
 
 ## Requirements
 
@@ -27,12 +27,17 @@ directory location needs to be configured in the environment variable
 release in file format.
 
 ```bash
-# get the latest release artifact of MassBank-data (reference data) and put it into MassBank-data folder
-version=$(curl -s https://api.github.com/repos/MassBank/MassBank-data/releases/latest \
-| grep "tag_name" | sed "s/\"tag_name\": //g" | sed "s/\"//g" | sed "s/,//g" | sed "s/ //g")
+# Download the latest MassBank-data release into MassBank-data.
+version=$(
+  curl -s \
+    https://api.github.com/repos/MassBank/MassBank-data/releases/latest |
+    grep "tag_name" | sed "s/\"tag_name\": //g" |
+    sed "s/\"//g" | sed "s/,//g" | sed "s/ //g"
+)
 mkdir -p MassBank-data
-wget -qO- https://github.com/MassBank/MassBank-data/archive/refs/tags/$version.tar.gz | \
-tar -xzf - -C ./MassBank-data --strip-components=1
+archive_base="https://github.com/MassBank/MassBank-data/archive/refs/tags"
+wget -qO- "$archive_base/$version.tar.gz" |
+  tar -xzf - -C ./MassBank-data --strip-components=1
 ```
 
 Now we set the environment variable:
@@ -88,10 +93,16 @@ thread count, override the container command, for example by appending
 To run the server in a Docker container, execute the following commands:
 
 ```bash
-# get the latest release artifact of MassBank-data (reference data) and put it into MassBank-data folder
-version=$(curl -s https://api.github.com/repos/MassBank/MassBank-data/releases/latest \
-| grep "tag_name" | sed "s/\"tag_name\": //g" | sed "s/\"//g" | sed "s/,//g" | sed "s/ //g") && \
-wget -O MassBank-data-$version.tar.gz https://github.com/MassBank/MassBank-data/archive/refs/tags/$version.tar.gz && \
+# Download the latest MassBank-data release into MassBank-data.
+version=$(
+  curl -s \
+    https://api.github.com/repos/MassBank/MassBank-data/releases/latest |
+    grep "tag_name" | sed "s/\"tag_name\": //g" |
+    sed "s/\"//g" | sed "s/,//g" | sed "s/ //g"
+) &&
+archive_base="https://github.com/MassBank/MassBank-data/archive/refs/tags" &&
+wget -O "MassBank-data-$version.tar.gz" \
+  "$archive_base/$version.tar.gz" && \
 tar -xzf MassBank-data-$version.tar.gz && \
 mv MassBank-data-$version MassBank-data
 
@@ -106,8 +117,8 @@ massbank-similarity-api
 ```
 
 Prebuild docker images are available from
-[quay.io/massbank/massbank-similarity-api](https://quay.io/repository/massbank/massbank-similarity-api).
-The fastest way to get things running is:
+[quay.io/massbank/massbank-similarity-api][images]. The fastest way to get
+things running is:
 
 ```bash
 # get the latest reference data (as described above)
@@ -119,3 +130,5 @@ docker run -p 8080:8080 \
 -e DATA_DIR='/MassBank-data' \
 quay.io/massbank/massbank-similarity-api:latest
 ```
+
+[images]: https://quay.io/repository/massbank/massbank-similarity-api
