@@ -24,5 +24,5 @@
       "onAutoForward": "notify"
     }
   },
-  "postCreateCommand": "uv venv --python 3.13 && uv pip install -r test-requirements.txt && mkdir -p gen && bash generate.sh"
+  "postCreateCommand": "uv sync --locked && mkdir -p gen && bash generate.sh"
 }

@@ -8,13 +8,15 @@ RUN bash generate.sh
 
 FROM python:3.13-slim-bookworm
 WORKDIR /usr/src/app
-COPY requirements.txt /usr/src/app/
-RUN pip3 install --root-user-action=ignore --upgrade pip && pip3 install --root-user-action=ignore --no-cache-dir -r requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:0.13.9 /uv /usr/local/bin/uv
+COPY pyproject.toml uv.lock /usr/src/app/
+RUN uv sync --locked --no-dev
+ENV PATH="/usr/src/app/.venv/bin:$PATH"
 
 COPY --from=0 /usr/src/app/openapi.yaml /usr/src/app/openapi.yaml
 COPY --from=0 /usr/src/app/gen /usr/src/app/gen
 COPY similarity_api_impl /usr/src/app/similarity_api_impl
 
 EXPOSE 8080/tcp
-ENTRYPOINT ["/usr/local/bin/waitress-serve"]
+ENTRYPOINT ["waitress-serve"]
 CMD ["--port=8080", "--threads=1", "similarity_api_impl.app:app"]

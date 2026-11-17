@@ -1,4 +1,0 @@
-# requirements.txt
--r requirements.txt
-
-Flask-Testing==0.8.1

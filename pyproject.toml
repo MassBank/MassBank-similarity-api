@@ -1,0 +1,19 @@
+[project]
+name = "massbank-similarity-api"
+version = "1.9.0.dev0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "connexion[swagger-ui]==2.14.2",
+    "python-dateutil",
+    "flask<2.3",
+    "flask-cors",
+    "waitress==3.0.2",
+    "matchms==0.31.0",
+    "numpy",
+]
+
+[dependency-groups]
+dev = ["flask-testing==0.8.1"]
+
+[tool.uv]
+package = false

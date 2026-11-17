@@ -7,7 +7,7 @@ the [Connexion](https://github.com/zalando/connexion) library on top of Flask.
 
 ## Requirements
 
-Tested on Python 3.13
+Python 3.13, [uv](https://docs.astral.sh/uv/getting-started/installation/), Java and Maven (for OpenAPI code generation).
 
 ## Configuration
 
@@ -43,18 +43,19 @@ If not set / is used by default.
 
 ## Usage
 
-To run the server, install the requirements, generate the server code
+To run the server, sync the dependencies, generate the server code
 and start the server like this:
 
 ```bash
-python3 -m venv venv && \
-venv/bin/pip3 install -r requirements.txt && \
-bash generate.sh && \
-python3 -m similarity_api_impl
+uv sync --locked
+mkdir -p gen && bash generate.sh
+uv run python -m similarity_api_impl
 ```
 
 You can find the swagger ui at http://localhost:8080/ui/ and the
 OpenAPI definition at http://localhost:8080/openapi.json in your browser.
+
+Run tests with `uv run python -m unittest discover -s test`. After changing dependencies in `pyproject.toml`, run `uv lock` and commit the updated `uv.lock`.
 
 ## Running with Docker
 

@@ -1,6 +1,6 @@
 # MassBank-similarity-api Dev Container
 
-The development container uses Ubuntu 26.04, uv-managed Python 3.13 (matching CI), and Java/Maven for OpenAPI code generation. On creation, it sets up `.venv`, installs `test-requirements.txt`, and generates the API code. This project uses requirements files, so setup uses `uv pip install` rather than `uv sync`.
+The development container uses Ubuntu 26.04, uv-managed Python 3.13 (matching CI), and Java/Maven for OpenAPI code generation. On creation, it syncs `.venv` from `uv.lock` and generates the API code.
 
 ## Container configuration
 
@@ -13,21 +13,22 @@ The Python interpreter is located at `.venv/bin/python` inside the workspace.
 Start the API from the repository root:
 
 ```bash
-python -m similarity_api_impl
+uv run python -m similarity_api_impl
 ```
 
 Port 8080 is forwarded by the container. Run the test suite with:
 
 ```bash
-python -m unittest discover -s test
+uv run python -m unittest discover -s test
 ```
 
 ## Updating dependencies
 
-After changing the requirements files, update the environment in the container:
+After changing dependencies in `pyproject.toml`, update the lockfile and environment:
 
 ```bash
-uv pip install -r test-requirements.txt
+uv lock
+uv sync
 ```
 
 Rebuild the Dev Container after changing the Dockerfile.
