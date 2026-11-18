@@ -67,8 +67,8 @@ Die API und Swagger UI laufen standardmäßig auf Port 8080 beziehungsweise
 zusätzliche Anfrageprotokollierung. Der Python-Start verwendet standardmäßig
 zwei Waitress-Threads; `THREADS` überschreibt diese Zahl.
 
-Das Dockerfile startet Waitress direkt mit `--threads=2`. Dort erfolgt eine
-Änderung der Threadzahl über die Container-Kommandozeile, nicht über `THREADS`.
+Das Dockerfile nutzt denselben Python-Start und dieselbe Variable `THREADS`.
+Probes laufen auf demselben Port mit reserviertem Waitress-Worker.
 Vor einem lokalen Start prüfen, ob eine vorhandene Instanz den Port verwendet;
 einen laufenden Service nicht beiläufig ersetzen.
 

@@ -18,5 +18,4 @@ COPY --from=0 /usr/src/app/gen /usr/src/app/gen
 COPY similarity_api_impl /usr/src/app/similarity_api_impl
 
 EXPOSE 8080/tcp
-ENTRYPOINT ["waitress-serve"]
-CMD ["--port=8080", "--threads=2", "similarity_api_impl.app:app"]
+ENTRYPOINT ["python", "-m", "similarity_api_impl"]

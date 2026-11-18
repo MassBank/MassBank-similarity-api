@@ -56,8 +56,8 @@ export VERBOSE=true
 The application context path can be configured with the environment variable
 CONTEXT_PATH. If not set / is used by default.
 
-The Python module uses two Waitress threads by default. Set `THREADS` to change
-the number of request threads, for example:
+The server uses two regular Waitress workers by default. Set `THREADS` to
+change that number, for example:
 
 ```bash
 export THREADS=4
@@ -67,6 +67,13 @@ The service loads reference data once at startup and logs the dataset version
 from `DATA_DIR/VERSION` when present. Startup temporarily requires memory for
 both the Spectrum objects and the packed arrays. A load failure prevents the
 service from starting. Changes on disk are not picked up at runtime.
+
+For Kubernetes HTTP probes, use `/readiness` and `/liveness` on the normal
+API port (`8080`). Prefix both paths with `CONTEXT_PATH` if configured.
+The same Waitress server reserves a separate worker and queue for probes.
+Readiness requires a fully loaded snapshot. The port does not accept
+connections during loading, so allow enough startup time with a `startupProbe`.
+Once the server is listening, liveness does not check the reference data.
 
 ## Usage
 
@@ -84,13 +91,13 @@ definition at http://localhost:8080/openapi.json in your browser.
 
 Run tests with `uv run python -m unittest discover -s test`. The API tests use
 the service app with `DATA_DIR` set to `test/MassBank-test-data`. After changing
-dependencies in `pyproject.toml`, run `uv lock` and commit the updated `uv.lock`.
+dependencies in `pyproject.toml`, run `uv lock` and commit the updated
+`uv.lock`.
 
 ## Running with Docker
 
-The Docker image starts Waitress directly with `--threads=2`. To change the
-thread count, override the container command, for example by appending
-`--port=8080 --threads=4 similarity_api_impl.app:app` after the image name.
+The Docker image uses the same launcher as `python -m similarity_api_impl`.
+Set `THREADS` in the container environment to change the regular worker count.
 
 To run the server in a Docker container, execute the following commands:
 

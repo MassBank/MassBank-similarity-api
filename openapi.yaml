@@ -27,30 +27,27 @@ paths:
     get:
       summary: Check whether the service is ready to accept traffic.
       description: >
-        Reports whether the service is initialized and can serve similarity
-        requests. The probe must not enter the similarity task queue or wait
-        for queued or running tasks to finish.
+        The service is ready only after the reference snapshot is fully loaded
+        at startup. Returns 503 if reachable without a loaded snapshot. The
+        probe does not enter the similarity task queue.
       x-openapi-router-controller: similarity_api_impl.similarity_api_impl_controller
       operationId: readiness_get
       responses:
         "200":
-          description: The service is ready to accept traffic.
+          description: The reference snapshot is loaded.
         "503":
-          description: The service is not ready to accept traffic.
+          description: No fully loaded reference snapshot is available.
   /liveness:
     get:
       summary: Check whether the service is alive.
       description: >
-        Checks whether the service is responsive independently of readiness.
-        The probe must not enter the similarity task queue or wait for queued
-        or running tasks to finish. Queue saturation is not a liveness failure.
+        Checks whether the service is responsive independently of reference
+        data and without entering the similarity task queue.
       x-openapi-router-controller: similarity_api_impl.similarity_api_impl_controller
       operationId: liveness_get
       responses:
         "200":
           description: The service is alive.
-        "503":
-          description: The service is not alive.
   /similarity:
     post:
       summary: Create a new similarity calculation.

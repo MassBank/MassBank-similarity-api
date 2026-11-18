@@ -5,17 +5,16 @@ from matchms import Spectrum
 
 
 def load_from_massbank_files(directory: str) -> list[Spectrum]:
-    files = list_files_recursive(directory)
-    spectra = list[Spectrum]()
-    for i, file in enumerate(files):
-        # print(f'--> Processing file {i + 1}/{len(files)} -> {file}')
+    spectra: list[Spectrum] = []
+    for file in list_files_recursive(directory):
         with open(file, 'r') as f:
             lines = f.readlines()
         metadata = {}
         masses, rel_intensities = [], []
         is_deprecated = False
-        num_peaks, peak_line_index = None, None
-        for j, line in enumerate(lines):
+        num_peaks = None
+        reading_peaks = False
+        for line in lines:
             if line.startswith('DEPRECATED:'):
                 is_deprecated = True
                 break
@@ -27,17 +26,14 @@ def load_from_massbank_files(directory: str) -> list[Spectrum]:
                 metadata["precursor_type"] = line.split(' ')[2].strip()
             elif line.startswith('PK$NUM_PEAK:'):
                 num_peaks = int(line.split(':')[1].strip())
-            elif peak_line_index is None:
-                if line.startswith('PK$PEAK:'):
-                    # Start collecting peaks from the next line
-                    peak_line_index = j + 1
-            elif j >= peak_line_index and len(masses) < num_peaks:
+            elif not reading_peaks:
+                reading_peaks = line.startswith('PK$PEAK:')
+            elif len(masses) < num_peaks:
                 peak_data = line.strip().split(" ")
                 masses.append(float(peak_data[0]))
                 rel_intensities.append(float(peak_data[2]))
 
         if is_deprecated:
-            # print(f'Processing file {file} -> Skipping to next file because it is deprecated.')
             continue
 
         spectrum = Spectrum(

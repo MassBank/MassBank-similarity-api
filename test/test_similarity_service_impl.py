@@ -4,6 +4,10 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../gen'))
 
 import unittest
+from concurrent.futures import ThreadPoolExecutor
+from http.client import HTTPConnection
+from threading import Event, Thread
+
 from flask import json
 from similarity_api.models import Peak, SimilarityCalculation
 from test import MyBaseTestCase
@@ -16,6 +20,61 @@ class TestSimilarityApiImplController(MyBaseTestCase):
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
+
+    def test_probes_bypass_busy_waitress_worker_on_same_port(self):
+        from similarity_api_impl.app import create_http_server
+
+        worker_busy, release_worker, stop_server = Event(), Event(), Event()
+
+        def application(environ, start_response):
+            if environ["PATH_INFO"] == "/similarity":
+                worker_busy.set()
+                if not release_worker.wait(10):
+                    raise TimeoutError("Test did not release the regular worker")
+            return self.app(environ, start_response)
+
+        server = create_http_server(
+            application, threads=1, context_path="", listen="127.0.0.1:0"
+        )
+
+        def run_server():
+            try:
+                while not stop_server.is_set():
+                    server.asyncore.loop(timeout=0.05, map=server._map, count=1)
+            finally:
+                server.task_dispatcher.shutdown()
+                server.asyncore.close_all(server._map)
+
+        def request(method, path, body=None, headers=None):
+            connection = HTTPConnection("127.0.0.1", server.effective_port, timeout=5)
+            try:
+                connection.request(method, path, body=body, headers=headers or {})
+                response = connection.getresponse()
+                return response.status, response.read()
+            finally:
+                connection.close()
+
+        thread = Thread(target=run_server, daemon=True)
+        thread.start()
+        try:
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                similarity = pool.submit(
+                    request, "POST", "/similarity",
+                    '{"peak_list":[{"mz":147.063,"intensity":121.684}]}',
+                    self.headers,
+                )
+                try:
+                    self.assertTrue(worker_busy.wait(3))
+                    self.assertEqual(request("GET", "/readiness"), (200, b""))
+                    self.assertEqual(request("GET", "/liveness"), (200, b""))
+                    self.assertFalse(similarity.done())
+                finally:
+                    release_worker.set()
+                self.assertEqual(similarity.result()[0], 200)
+        finally:
+            stop_server.set()
+            thread.join(timeout=5)
+            self.assertFalse(thread.is_alive())
 
     def test_similarity_post_with_reference_spectra_list(self):
         """Test case for similarity_post with a reference spectra list

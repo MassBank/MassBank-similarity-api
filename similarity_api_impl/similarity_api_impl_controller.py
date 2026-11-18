@@ -3,6 +3,7 @@ import os
 
 import connexion
 import numpy
+from flask import Response
 from matchms import set_matchms_logger_level, Spectrum
 from matchms.filtering import normalize_intensities
 
@@ -55,6 +56,14 @@ def similarity_post(similarity_calculation):
             "similarity_score_list": packed.score(query.peaks.to_numpy, request.reference_spectra_list)
         })
     return None
+
+
+def readiness_get():
+    return Response(status=503 if spectra_loader.packed is None else 200)
+
+
+def liveness_get():
+    return Response(status=200)
 
 
 def version_get():
