@@ -130,12 +130,18 @@ components:
         - peak_list
 
     reference_spectra_list:
-      description: the reference spectra list, list of ACCESSION strings
+      description: Optional filter by reference spectrum accession.
       title: reference_spectra_list
       type: object
       properties:
         reference_spectra_list:
           type: array
+          minItems: 1
+          description: >
+            Omit this field to search all reference spectra. If provided,
+            the list must contain at least one accession and restricts the
+            search to matching accessions. Unknown accessions are ignored.
+            An empty list returns 400 Bad Request.
           items:
             type: string
           example:
@@ -154,6 +160,7 @@ components:
           type: string
           enum:
             - cosine
+          default: cosine
           example: cosine
 
     similarity_calculation:
@@ -173,6 +180,9 @@ components:
           type: string
         similarity_score:
           type: number
+      required:
+        - accession
+        - similarity_score
       example:
         accession: MSBNK-IPB_Halle-PB001341
         similarity_score: 0.3
@@ -184,6 +194,9 @@ components:
       properties:
         similarity_score_list:
           type: array
+          description: >
+            Contains only matches with scores greater than zero, sorted by
+            descending score. An empty list means no positive matches.
           items:
             $ref: "#/components/schemas/similarity_score"
           example:
@@ -197,6 +210,8 @@ components:
               similarity_score: 0.9
             - accession: MSBNK-IPB_Halle-PB001343
               similarity_score: 0.8
+      required:
+        - similarity_score_list
 
     error:
       description: an error response

@@ -112,35 +112,15 @@ class TestSimilarityApiImplController(MyBaseTestCase):
             ]})
 
     def test_similarity_post_with_empty_reference_spectra_list(self):
-        """Test case for similarity_post with an empty reference spectra list
-        """
-        similarity_calculation = SimilarityCalculation(
-            peak_list=[
-                Peak(mz=147.063, intensity=121.684),
-                Peak(mz=303.050, intensity=10000.000),
-                Peak(mz=449.108, intensity=657.368),
-                Peak(mz=465.102, intensity=5884.210),
-                Peak(mz=611.161, intensity=6700.000)],
-            reference_spectra_list=[],
-            similarity_fn="cosine")
-        response = self.client.open(
+        response = self.client.post(
             '/similarity',
-            method='POST',
-            headers=self.headers,
-            data=json.dumps(similarity_calculation),
-            content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-        self.assertEqual(
-            first=response.json['similarity_score_list'][0:5],
-            second=[
-                {'accession': 'MSBNK-IPB_Halle-PB001341', 'similarity_score': 0.9999987337877411},
-                {'accession': 'MSBNK-IPB_Halle-PB001342', 'similarity_score': 0.9997024900194288},
-                {'accession': 'MSBNK-IPB_Halle-PB006201', 'similarity_score': 0.8742310139566003},
-                {'accession': 'MSBNK-IPB_Halle-PB006202', 'similarity_score': 0.7797803260380126},
-                {'accession': 'MSBNK-IPB_Halle-PB001343', 'similarity_score': 0.7453832548137632}
-            ])
-        self.assertTrue(len(response.json['similarity_score_list']) > 5)
+            json={
+                'peak_list': [{'mz': 147.063, 'intensity': 121.684}],
+                'reference_spectra_list': [],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('reference_spectra_list', response.json['detail'])
 
     def test_similarity_post_with_only_peaklist(self):
         """Test case for similarity_post with only peaklist given

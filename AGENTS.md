@@ -90,9 +90,9 @@ Abhängigkeit.
   Intensitätspotenz 1, Peak-Zuordnung, Normalisierung, Trefferfilter und
   Sortierung. Änderungen daran sind fachliche Änderungen und benötigen passende
   Tests.
-- Fehlende oder leere `reference_spectra_list` bedeutet alle Referenzen. Eine
-  nicht leere Liste beschränkt die Auswahl; unbekannte Accessions werden
-  ignoriert. Referenzauswahl darf keine Peakdaten kopieren.
+- Eine fehlende `reference_spectra_list` bedeutet alle Referenzen. Die API weist
+  eine leere Liste mit `400` ab. Eine nicht leere Liste beschränkt die Auswahl;
+  unbekannte Accessions werden ignoriert.
 - Numerische Änderungen gegen matchms prüfen, einschließlich gleicher Scores,
   überlappender Toleranzfenster, fehlender Treffer und gleichzeitiger Anfragen.
   Exakte Abweichungen, Toleranzabweichungen und andere Trefferreihenfolgen

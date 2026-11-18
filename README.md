@@ -89,6 +89,11 @@ uv run --locked python -m similarity_api_impl
 You can find the swagger ui at http://localhost:8080/ui/ and the OpenAPI
 definition at http://localhost:8080/openapi.json in your browser.
 
+For `POST /similarity`, omit `reference_spectra_list` to search all reference
+spectra. A non-empty list restricts the search to the supplied accessions;
+unknown accessions are ignored. An explicit empty list (`[]`) returns
+`400 Bad Request`.
+
 Run tests with `uv run python -m unittest discover -s test`. The API tests use
 the service app with `DATA_DIR` set to `test/MassBank-test-data`. After changing
 dependencies in `pyproject.toml`, run `uv lock` and commit the updated
