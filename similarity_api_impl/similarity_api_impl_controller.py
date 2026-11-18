@@ -30,10 +30,15 @@ def similarity_post(similarity_calculation):
     :rtype: SimilarityScoreList
     """
     if connexion.request.is_json:
+        packed = spectra_loader.packed
+        if packed is None:
+            return connexion.problem(
+                title="Service Unavailable",
+                detail="Reference spectra are not loaded.",
+                status=503,
+            )
+
         request = SimilarityCalculation.from_dict(similarity_calculation)
-
-        spectra_loader.load_spectra()
-
         mz, intensities = zip(*[(peak.mz, peak.intensity) for peak in request.peak_list])
         logger.debug("Got spectra: %s", request.peak_list)
 
@@ -46,8 +51,6 @@ def similarity_post(similarity_calculation):
                 status=400,
             )
 
-        # Keep one immutable snapshot for the duration of this request.
-        packed = spectra_loader.packed
         return SimilarityScoreList.from_dict({
             "similarity_score_list": packed.score(query.peaks.to_numpy, request.reference_spectra_list)
         })

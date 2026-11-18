@@ -63,8 +63,10 @@ the number of request threads, for example:
 export THREADS=4
 ```
 
-Loading or reloading temporarily requires both Spectrum objects and the packed
-arrays. Requests already running keep their previous reference snapshot.
+The service loads reference data once at startup and logs the dataset version
+from `DATA_DIR/VERSION` when present. Startup temporarily requires memory for
+both the Spectrum objects and the packed arrays. A load failure prevents the
+service from starting. Changes on disk are not picked up at runtime.
 
 ## Usage
 
@@ -80,9 +82,9 @@ uv run --locked python -m similarity_api_impl
 You can find the swagger ui at http://localhost:8080/ui/ and the OpenAPI
 definition at http://localhost:8080/openapi.json in your browser.
 
-Run tests with `uv run python -m unittest discover -s test`. After changing
-dependencies in `pyproject.toml`, run `uv lock` and commit the updated
-`uv.lock`.
+Run tests with `uv run python -m unittest discover -s test`. The API tests use
+the service app with `DATA_DIR` set to `test/MassBank-test-data`. After changing
+dependencies in `pyproject.toml`, run `uv lock` and commit the updated `uv.lock`.
 
 ## Running with Docker
 

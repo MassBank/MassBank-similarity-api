@@ -9,9 +9,6 @@ from similarity_api.models import Peak, SimilarityCalculation
 from test import MyBaseTestCase
 
 
-#set DATA_DIR to the test data
-os.environ["DATA_DIR"] = os.path.join(os.path.dirname(__file__), 'MassBank-test-data')
-
 class TestSimilarityApiImplController(MyBaseTestCase):
 
     def setUp(self):

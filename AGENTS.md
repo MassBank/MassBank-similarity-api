@@ -83,9 +83,9 @@ Abhängigkeit.
 - Der Numba-Kern läuft mit `njit(nogil=True, cache=True)`.
   Python-Objektverarbeitung nicht in die native Vergleichsschleife verschieben.
   GIL-Freigabe bedeutet nicht, dass der gesamte HTTP-Request GIL-frei ist.
-- Bei einem Reload einen vollständigen neuen Snapshot erstellen und erst danach
-  veröffentlichen. Laufende Anfragen müssen ihren bisherigen Snapshot behalten.
-  Ladefehler dürfen den vorhandenen Snapshot nicht überschreiben.
+- Den vollständigen Snapshot beim Prozessstart aufbauen und erst danach
+  veröffentlichen. Datenupdates über einen Pod-Rollout bereitstellen; nicht
+  aus einem Request heraus nachladen.
 - Die bisherige CosineGreedy-Semantik erhalten: Toleranz 0.1, m/z-Potenz 0,
   Intensitätspotenz 1, Peak-Zuordnung, Normalisierung, Trefferfilter und
   Sortierung. Änderungen daran sind fachliche Änderungen und benötigen passende

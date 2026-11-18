@@ -7,10 +7,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../gen'))
 import connexion
 from flask_cors import CORS
 import logging
-import threading
 from similarity_api import encoder
 from waitress import serve
-from flask import redirect,request
+from flask import redirect, request
 from similarity_api_impl.spectra_loader import spectra_loader
 
 VERBOSE = os.environ.get('VERBOSE', "false")
@@ -25,12 +24,12 @@ app.app.json_encoder = encoder.JSONEncoder
 app.add_api('openapi.yaml',
             base_path=CONTEXT_PATH,
             arguments={'title': 'Similarity score api for MassBank'},
-            pythonic_params=True)
+            pythonic_params=True,
+            resolver_error=501)
 CORS(app.app)
 
-# Create and start a thread to run spectra_loader.load_spectra()
-init_thread = threading.Thread(target=spectra_loader.load_spectra)
-init_thread.start()
+spectra_loader.load_spectra()
+
 # Enable verbose logging if set
 @app.app.before_request
 def log_request_info():

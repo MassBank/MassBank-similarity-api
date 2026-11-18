@@ -37,22 +37,31 @@ class PackedSimilarityTest(unittest.TestCase):
                 self.assertEqual(result, expected)
         np.testing.assert_array_equal(packed.peaks, before)
 
-    def test_loader_shares_snapshot_and_preserves_it_on_failed_reload(self):
-        import tempfile
-        from datetime import datetime
+    def test_loader_uses_version_and_loads_only_once(self):
+        from pathlib import Path
         from unittest.mock import patch
         from similarity_api_impl.spectra_loader import SpectraLoader
 
         spectrum = Spectrum(mz=np.array([1., 2.]), intensities=np.array([1., .5]), metadata={'spectrum_id':'example'}, metadata_harmonization=False)
-        with tempfile.TemporaryDirectory() as directory:
-            loader = SpectraLoader(directory)
-            with patch('similarity_api_impl.spectra_loader.load_from_massbank_files', return_value=[spectrum]):
+        directory = Path(__file__).with_name("MassBank-test-data")
+        loader = SpectraLoader(str(directory))
+        with patch('similarity_api_impl.spectra_loader.load_from_massbank_files', return_value=[spectrum]) as load:
+            with self.assertLogs("spectra_loader", "INFO") as logs:
                 loader.load_spectra()
             snapshot = loader.packed
-            self.assertFalse(hasattr(loader, "spectra"))
-            self.assertEqual(snapshot.score(spectrum.peaks.to_numpy)[0]['accession'], 'example')
-            loader.timestamp = datetime.min
-            with patch('similarity_api_impl.spectra_loader.load_from_massbank_files', side_effect=OSError('read failed')):
-                with self.assertRaises(OSError):
-                    loader.load_spectra()
-            self.assertIs(loader.packed, snapshot)
+            loader.load_spectra()
+            load.assert_called_once_with(str(directory))
+        self.assertIn("0.1.0-test", logs.output[-1])
+        self.assertFalse(hasattr(loader, "spectra"))
+        self.assertEqual(snapshot.score(spectrum.peaks.to_numpy)[0]['accession'], 'example')
+        self.assertIs(loader.packed, snapshot)
+
+    def test_loader_does_not_publish_an_empty_snapshot(self):
+        import tempfile
+        from similarity_api_impl.spectra_loader import SpectraLoader
+
+        with tempfile.TemporaryDirectory() as directory:
+            loader = SpectraLoader(directory)
+            with self.assertRaisesRegex(ValueError, "No reference spectra found"):
+                loader.load_spectra()
+            self.assertIsNone(loader.packed)

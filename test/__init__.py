@@ -1,18 +1,25 @@
-import logging
+import os
+from pathlib import Path
 
-import connexion
 from flask_testing import TestCase
-
-from similarity_api.encoder import JSONEncoder
 
 
 class MyBaseTestCase(TestCase):
 
     def create_app(self):
-        logging.getLogger('connexion.operation').setLevel('ERROR')
-        app = connexion.App(__name__, specification_dir='..')
-        app.app.json_encoder = JSONEncoder
-        app.add_api('openapi.yaml',
-                    arguments={'title': 'Similarity score api for MassBank'},
-                    pythonic_params=True)
+        config = {
+            "DATA_DIR": str(Path(__file__).with_name("MassBank-test-data")),
+            "CONTEXT_PATH": "",
+        }
+        previous = {key: os.environ.get(key) for key in config}
+        os.environ.update(config)
+        try:
+            # Importing the service app initializes its reference snapshot.
+            from similarity_api_impl.app import app
+        finally:
+            for key, value in previous.items():
+                if value is None:
+                    del os.environ[key]
+                else:
+                    os.environ[key] = value
         return app.app
