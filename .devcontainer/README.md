@@ -10,8 +10,8 @@ The configuration targets rootless Podman: it mounts the project at
 `/workspaces/MassBank-similarity-api`, uses `:Z` for SELinux labeling, and maps
 the host user to `vscode` (1000/1000). Automatic UID rewriting is disabled. The
 sibling directory `MassBank-data` next to the project on the host is mounted at
-`/workspace/MassBank-data` in the container for testing; it must exist before
-starting the container. Set `DATA_DIR=/workspace/MassBank-data` to use it. The
+`/workspaces/MassBank-data` in the container for testing; it must exist before
+starting the container. Set `DATA_DIR=/workspaces/MassBank-data` to use it. The
 named volumes `codex-devcontainer` and `copilot-devcontainer` persist agent
 state across container rebuilds.
 

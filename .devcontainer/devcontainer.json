@@ -8,7 +8,8 @@
   "mounts": [
     "source=${localWorkspaceFolder}/../MassBank-data,target=/workspaces/MassBank-data,type=bind,Z",
     "source=codex-devcontainer,target=/home/vscode/.codex,type=volume",
-    "source=copilot-devcontainer,target=/home/vscode/.copilot,type=volume"
+    "source=copilot-devcontainer,target=/home/vscode/.copilot,type=volume",
+    "source=copilot-auth-devcontainer,target=/home/vscode/.config/github-copilot,type=volume"
   ],
   "runArgs": [
     "--userns=keep-id:uid=1000,gid=1000"
