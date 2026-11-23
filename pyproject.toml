@@ -8,7 +8,7 @@ dependencies = [
     "flask<2.3",
     "flask-cors",
     "waitress==3.0.2",
-    "matchms==0.34.0",
+    "matchms==1.0.0",
     "numpy",
     "numba",
 ]
